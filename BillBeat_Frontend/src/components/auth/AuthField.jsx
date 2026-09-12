@@ -1,0 +1,3 @@
+export default function AuthField({ label, error, ...props }) {
+  return <label className="block"><span className="mb-2 block text-sm font-semibold text-[#383331]">{label}</span><input className={`min-h-12 w-full rounded-xl bg-white px-4 text-sm text-[#1d1b1a] outline-none ring-1 transition focus:ring-2 ${error ? 'ring-[#d92d20] focus:ring-[#d92d20]' : 'ring-[#ded9d4] focus:ring-[#d92d20]'}`} {...props} />{error && <span className="mt-1.5 block text-xs font-medium text-[#b42318]">{error}</span>}</label>;
+}

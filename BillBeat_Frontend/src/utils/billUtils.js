@@ -1,0 +1,1 @@
+export function formatMoney(value) { return value === null || value === undefined ? 'Not available' : `₹${Number(value).toFixed(2)}`; }

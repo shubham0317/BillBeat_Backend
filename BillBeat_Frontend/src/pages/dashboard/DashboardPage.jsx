@@ -1,0 +1,20 @@
+import { ArrowUpRight, CircleAlert, Route, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import PageHeader from '../../components/layout/PageHeader';
+import BeatCard from '../../components/beats/BeatCard';
+import StatusBadge from '../../components/common/StatusBadge';
+import { ErrorState, EmptyState, LoadingState } from '../../components/common/StateViews';
+import { useBeats } from '../../queries/beatQueries';
+
+export default function DashboardPage() {
+  const query = useBeats();
+  if (query.isLoading) return <LoadingState label="Preparing your route overview" />;
+  if (query.isError) return <div className="space-y-6"><PageHeader eyebrow="Dashboard" title="Good morning." description="Your beat overview could not be loaded." /><ErrorState message={query.error.message} onRetry={query.refetch} /></div>;
+  const beats = query.data || [];
+  const activeBeats = beats.filter((beat) => beat.active);
+  const activeCustomers = activeBeats.reduce((total, beat) => total + beat.customerCount, 0);
+  const activeDue = activeBeats.reduce((total, beat) => total + beat.dueCount, 0);
+  return <div className="space-y-8"><PageHeader eyebrow="Dashboard" title="Good morning." description="A focused view of the delivery areas returned for your vendor account." action={<StatusBadge tone="success">Live backend data</StatusBadge>} /><section className="grid gap-4 sm:grid-cols-3"><Metric icon={Route} label="Total beats" value={beats.length} /><Metric icon={Route} label="Active beats" value={activeBeats.length} /><Metric icon={Users} label="Customers in active beats" value={activeCustomers} /></section><section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]"><div className="rounded-3xl bg-[#1d1b1a] p-6 text-white sm:p-8"><div className="flex items-start justify-between gap-6"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#fca5a1]">Beat pulse</p><h2 className="mt-3 max-w-md font-display text-3xl font-bold tracking-tight">{activeDue} customers currently marked due across active beats.</h2></div><CircleAlert className="shrink-0 text-[#fca5a1]" /></div><p className="mt-8 max-w-md text-sm leading-6 text-[#c9c2bc]">This is a sum of the backend-provided due counts for the complete active beat list. No billing totals are inferred.</p></div><div className="rounded-3xl border border-[#e6e1dd] bg-white p-6"><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8d8782]">Next view</p><h2 className="mt-2 font-display text-xl font-bold">Manage your areas</h2></div><ArrowUpRight className="text-[#d92d20]" /></div><p className="mt-5 text-sm leading-6 text-[#706a65]">Open the beats list to inspect each area’s operational summary.</p><Link to="/beats" className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-[#d92d20] px-4 text-sm font-semibold text-white hover:bg-[#b42318]">View beats</Link></div></section><section className="space-y-4"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8d8782]">Your areas</p><h2 className="mt-1 font-display text-2xl font-bold">Beat overview</h2></div><Link to="/beats" className="text-sm font-semibold text-[#b42318] hover:underline">See all</Link></div>{beats.length === 0 ? <EmptyState title="No beats returned" description="The backend has not returned any delivery areas for this vendor." /> : <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{beats.slice(0, 3).map((beat) => <BeatCard key={beat.id} beat={beat} />)}</div>}</section></div>;
+}
+
+function Metric({ icon: Icon, label, value }) { return <div className="rounded-2xl border border-[#e6e1dd] bg-white p-5"><Icon size={18} className="text-[#d92d20]" /><p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-[#8d8782]">{label}</p><p className="mt-2 font-display text-3xl font-bold text-[#1d1b1a]">{value}</p></div>; }

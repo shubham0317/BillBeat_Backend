@@ -1,0 +1,10 @@
+import { useState } from 'react';
+import Button from '../common/Button';
+import { ErrorState } from '../common/StateViews';
+
+export default function BillGenerationForm({ customers, customerId, onSubmit, isSubmitting, error }) {
+  const [billingPeriod, setBillingPeriod] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState(customerId || '');
+  const submit = (event) => { event.preventDefault(); if (!billingPeriod) return; onSubmit({ billingPeriod, ...(selectedCustomer ? { customerId: Number(selectedCustomer) } : {}) }); };
+  return <form className="space-y-4" onSubmit={submit}><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="mb-2 block text-sm font-semibold text-[#383331]">Billing period</span><input required type="month" value={billingPeriod} onChange={(event) => setBillingPeriod(event.target.value)} className="min-h-12 w-full rounded-xl bg-white px-4 text-sm outline-none ring-1 ring-[#ded9d4] focus:ring-2 focus:ring-[#d92d20]" /></label><label className="block"><span className="mb-2 block text-sm font-semibold text-[#383331]">Customer (optional)</span><select value={selectedCustomer} onChange={(event) => setSelectedCustomer(event.target.value)} disabled={Boolean(customerId)} className="min-h-12 w-full rounded-xl bg-white px-4 text-sm outline-none ring-1 ring-[#ded9d4]"><option value="">All eligible customers</option>{customers.map((customer) => <option key={customer.id} value={customer.id}>{customer.name}</option>)}</select></label></div>{error && <ErrorState message={error.status === 409 ? `A bill already exists for this customer and period. ${error.message}` : error.message} />}{!billingPeriod && <p className="text-xs text-[#8d8782]">Choose a billing period in YYYY-MM format.</p>}<Button type="submit" disabled={isSubmitting || !billingPeriod}>{isSubmitting ? 'Generating bills...' : selectedCustomer ? 'Generate customer bill' : 'Generate eligible bills'}</Button></form>;
+}

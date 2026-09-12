@@ -1,0 +1,4 @@
+export default function Pagination({ page, totalPages, totalElements, onPageChange }) {
+  if (!totalPages || totalPages <= 1) return <p className="text-xs text-[#8d8782]">{totalElements} customer{totalElements === 1 ? '' : 's'}</p>;
+  return <div className="flex items-center justify-between gap-4"><p className="text-xs text-[#8d8782]">Page {page + 1} of {totalPages} · {totalElements} customers</p><div className="flex gap-2"><button className="min-h-10 rounded-xl px-3 text-sm font-semibold ring-1 ring-[#ded9d4] disabled:opacity-40" disabled={page === 0} onClick={() => onPageChange(page - 1)}>Previous</button><button className="min-h-10 rounded-xl px-3 text-sm font-semibold ring-1 ring-[#ded9d4] disabled:opacity-40" disabled={page >= totalPages - 1} onClick={() => onPageChange(page + 1)}>Next</button></div></div>;
+}
