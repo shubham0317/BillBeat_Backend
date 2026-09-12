@@ -1,0 +1,9 @@
+import { ArrowUpRight, CalendarDays, Newspaper, Repeat2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import StatusBadge from '../common/StatusBadge';
+
+export default function SubscriptionCard({ subscription }) {
+  return <Link to={`/subscriptions/${subscription.id}`} className="group block rounded-2xl border border-[#e6e1dd] bg-white p-5 shadow-[0_8px_24px_rgba(29,27,26,0.04)] transition hover:-translate-y-0.5 hover:border-[#f0b1ab] hover:shadow-[0_12px_30px_rgba(29,27,26,0.08)]"><div className="flex items-start justify-between gap-4"><div className="flex min-w-0 items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#fff0ee] text-[#d92d20]"><Newspaper size={19} /></span><div className="min-w-0"><h2 className="truncate font-display text-lg font-bold text-[#1d1b1a]">{subscription.newspaperName}</h2><p className="mt-1 truncate text-sm text-[#706a65]">{subscription.customerName}</p></div></div><ArrowUpRight size={19} className="shrink-0 text-[#a29b95] group-hover:text-[#d92d20]" /></div><div className="mt-6 grid grid-cols-2 gap-4"><div><p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-[#8d8782]"><Repeat2 size={14} /> Copies</p><p className="mt-1 font-display text-2xl font-bold">{subscription.copies}</p></div><div className="text-right"><StatusBadge tone={subscription.status === 'ACTIVE' ? 'success' : subscription.status === 'CANCELLED' ? 'danger' : 'warning'}>{subscription.status}</StatusBadge><p className="mt-2 text-xs text-[#706a65]">{formatPrice(subscription.pricePerCopy)} / copy</p></div></div><p className="mt-5 flex items-center gap-2 text-xs text-[#706a65]"><CalendarDays size={14} /> {subscription.startDate} {subscription.endDate ? `to ${subscription.endDate}` : 'onward'}</p></Link>;
+}
+
+function formatPrice(value) { return value === null || value === undefined ? 'Price not available' : `₹${Number(value).toFixed(2)}`; }

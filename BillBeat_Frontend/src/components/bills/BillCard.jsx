@@ -1,0 +1,9 @@
+import { ArrowUpRight, CalendarDays, ReceiptText } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import StatusBadge from '../common/StatusBadge';
+import { formatMoney } from '../../utils/billUtils';
+import WhatsAppStatus from '../whatsapp/WhatsAppStatus';
+
+export default function BillCard({ bill }) {
+  return <Link to={`/bills/${bill.id}`} className="group block rounded-2xl border border-[#e6e1dd] bg-white p-5 shadow-[0_8px_24px_rgba(29,27,26,0.04)] transition hover:-translate-y-0.5 hover:border-[#f0b1ab] hover:shadow-[0_12px_30px_rgba(29,27,26,0.08)]"><div className="flex items-start justify-between gap-4"><div className="flex min-w-0 items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#fff0ee] text-[#d92d20]"><ReceiptText size={19} /></span><div className="min-w-0"><h2 className="truncate font-display text-lg font-bold">{bill.customerName}</h2><p className="mt-1 text-sm text-[#706a65]">{bill.billingPeriod}</p></div></div><ArrowUpRight size={19} className="shrink-0 text-[#a29b95] group-hover:text-[#d92d20]" /></div><div className="mt-6 flex items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8d8782]">Total amount</p><p className="mt-1 font-display text-2xl font-bold">{formatMoney(bill.totalAmount)}</p></div><div className="text-right"><StatusBadge tone={bill.status === 'PAID' ? 'success' : bill.status === 'UNPAID' ? 'danger' : 'warning'}>{bill.status}</StatusBadge><p className="mt-2 text-xs text-[#706a65]">Due {formatMoney(bill.dueAmount)}</p></div></div><div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-[#eee9e5] pt-3 text-xs text-[#706a65]"><span className="flex items-center gap-1.5"><CalendarDays size={14} /> {bill.startDate} to {bill.endDate}</span><WhatsAppStatus status={bill.whatsAppStatus} compact /></div></Link>;
+}
